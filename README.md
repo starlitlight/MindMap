@@ -1,1 +1,1 @@
-# MindMap
+MindMap is a .NET Core application designed to facilitate the organization and visualization of ideas in an interactive manner. This project empowers users to create and manipulate mind maps, enhancing their brainstorming sessions, project planning, and note-taking processes. The repository includes the setup for the main entry point of the application, utilizing the Microsoft.AspNetCore.Hosting namespace to build and run the web host, laying the foundational structure for a responsive and efficient web-based mind mapping tool.
