@@ -17,28 +17,46 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers();
+        AddControllers(services);
+        AddApiVersioning(services);
+        ConfigureRouting(services);
+    }
 
-        // Add API Versioning to the project
+    private static void AddControllers(IServiceCollection services)
+    {
+        services.AddControllers();
+    }
+
+    private static void AddApiVersioning(IServiceCollection services)
+    {
         services.AddApiVersioning(options =>
         {
-            // Specify the default API Version as 1.0
             options.DefaultApiVersion = new ApiVersion(1, 0);
-            // If the client does not specify the API version in the request, use the default API version.
             options.AssumeDefaultVersionWhenUnspecified = true;
-            // Advertise the API versions supported for the particular endpoint
             options.ReportApiVersions = true;
-            // Add support for multiple versioning scheme (e.g., by query string, header, etc.)
             options.ApiVersionReader = ApiVersionReader.Combine(
                 new QueryStringApiVersionReader("api-version"),
                 new HeaderApiVersionReader("X-Version"),
                 new MediaTypeApiVersionReader("version"));
         });
+    }
 
+    private static void ConfigureRouting(IServiceCollection services)
+    {
         services.AddRouting(options => options.LowercaseUrls = true);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        ConfigureEnvironment(app, env);
+        ConfigureHttpsRedirection(app);
+        UseStaticFiles(app);
+        UseRouting(app);
+        UseAuthorization(app);
+        ConfigureEndpoints(app);
+    }
+
+    private static void ConfigureEnvironment(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
         {
@@ -49,12 +67,30 @@ public class Startup
             app.UseExceptionHandler("/Home/Error");
             app.UseHsts();
         }
+    }
 
+    private static void ConfigureHttpsRedirection(IApplicationBuilder app)
+    {
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
-        app.UseRouting();
-        app.UseAuthorization();
+    }
 
+    private static void UseStaticFiles(IApplicationBuilder app)
+    {
+        app.UseStaticFiles();
+    }
+
+    private static void UseRouting(IApplicationBuilder app)
+    {
+        app.UseRouting();
+    }
+
+    private static void UseAuthorization(IApplicationBuilder app)
+    {
+        app.UseAuthorization();
+    }
+
+    private static void ConfigureEndpoints(IApplicationBuilder app)
+    {
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
