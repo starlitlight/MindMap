@@ -13,7 +13,12 @@ namespace MindMaps.Models
         [StringLength(255)]
         public string Title { get; set; }
 
-        public virtual ICollection<Node> Nodes { get; set; } = new List<Node>();
+        private ICollection<Node> _nodes;
+        public virtual ICollection<Node> Nodes 
+        { 
+            get => _nodes ?? (_nodes = new List<Node>());
+            set => _nodes = value;
+        }
     }
 
     public class Node
@@ -28,7 +33,12 @@ namespace MindMaps.Models
 
         public virtual Node ParentNode { get; set; }
         
-        public virtual ICollection<Node> ChildNodes { get; set; } = new List<Node>();
+        private ICollection<Node> _childNodes;
+        public virtual ICollection<Node> ChildNodes 
+        { 
+            get => _childNodes ?? (_childNodes = new List<Node>());
+            set => _childNodes = value;
+        }
 
         [Required]
         public Guid MindMapId { get; set; }
