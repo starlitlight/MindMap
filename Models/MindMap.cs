@@ -13,11 +13,11 @@ namespace MindMaps.Models
         [StringLength(255)]
         public string Title { get; set; }
 
-        private ICollection<Node> _nodes;
+        private ICollection<Node> _nodesCollection;
         public virtual ICollection<Node> Nodes 
         { 
-            get => _nodes ?? (_nodes = new List<Node>());
-            set => _nodes = value;
+            get => _nodesCollection ?? (_nodesCollection = new List<Node>());
+            set => _nodesCollection = value;
         }
     }
 
@@ -31,13 +31,13 @@ namespace MindMaps.Models
 
         public Guid? ParentNodeId { get; set; }
 
-        public virtual Node ParentNode { get; set; }
+        public virtual Node Parent { get; set; }
         
-        private ICollection<Node> _childNodes;
+        private ICollection<Node> _childNodesCollection;
         public virtual ICollection<Node> ChildNodes 
         { 
-            get => _childNodes ?? (_childNodes = new List<Node>());
-            set => _childNodes = value;
+            get => _childNodesCollection ?? (_childNodesCollection = new List<Node>());
+            set => _childNodesCollection = value;
         }
 
         [Required]
