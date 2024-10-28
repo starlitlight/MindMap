@@ -1,16 +1,15 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 const createMindMap = async (data) => {
   try {
     const response = await api.post('/mindmaps', data);
     console.log('Mind map created:', response.data);
-    return response.data;
   } catch (error) {
-    console.error('Error creating mind map', error);
+    console.error('Error creating mind map:', error);
   }
 };
 
@@ -18,9 +17,8 @@ const updateMindMap = async (id, data) => {
   try {
     const response = await api.put(`/mindmaps/${id}`, data);
     console.log('Mind map updated:', response.data);
-    return response.data;
   } catch (error) {
-    console.error('Error updating mind map', error);
+    console.error('Error updating mind map:', error);
   }
 };
 
@@ -29,7 +27,7 @@ const deleteMindMap = async (id) => {
     await api.delete(`/mindmaps/${id}`);
     console.log('Mind map deleted');
   } catch (error) {
-    console.error('Error deleting mind map', error);
+    console.error('Error deleting mind map:', error);
   }
 };
 
@@ -39,7 +37,8 @@ const retrieveMindMaps = async () => {
     console.log('Mind maps retrieved:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error retrieving mind maps', error);
+    console.error('Error retrieving mind maps:', error);
+    return [];
   }
 };
 
@@ -57,10 +56,11 @@ const displayMindMaps = async () => {
 document.addEventListener('DOMContentLoaded', () => {
   displayMindMaps();
   
-  document.getElementById('createMindMapButton').addEventListener('click', () => {
+  document.getElementById('createMindMapButton').addEventListener('click', async () => {
     const newMapData = {
       title: 'New Mind Map',
     };
-    createMindMap(newMapData).then(displayMindMaps);
+    await createMindMap(newMapData);
+    displayMindMaps();
   });
 });
