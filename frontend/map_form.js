@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const MindMapForm = ({ onSubmitSuccess, existingMap }) => {
-  const [formData, setFormData] = useState({
+  const getInitialFormData = () => ({
     title: existingMap ? existingMap.title : '',
     nodes: existingMap ? existingMap.nodes : '',
   });
 
+  const [formData, setFormData] = useState(getInitialFormData);
+
   const [formErrors, setFormErrors] = useState({});
+
+  useEffect(() => {
+    setFormData(getInitialFormData);
+  }, [existingMap]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +32,11 @@ const MindMapForm = ({ onSubmitSuccess, existingMap }) => {
     return Object.keys(errors).length === 0;
   };
 
+  const resetForm = () => {
+    setFormData(getInitialFormData());
+    setFormErrors({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -39,6 +50,7 @@ const MindMapForm = ({ onSubmitSuccess, existingMap }) => {
       });
       if (!response.ok) throw new Error('Network response was not ok');
       onSubmitSuccess();
+      resetForm(); 
     } catch (error) {
       console.error('Failed to submit mind map:', error);
     }
@@ -70,6 +82,7 @@ const MindMapForm = ({ onSubmitSuccess, existingMap }) => {
         {formErrors.nodes && <div className="error">{formErrors.nodes}</div>}
       </div>
       <button type="submit">Submit</button>
+      <button type="button" onClick={resetForm}>Reset</button>
     </form>
   );
 };
