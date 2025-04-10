@@ -7,6 +7,7 @@ import {
 const MindMapList = () => {
   const [mindMaps, setMindMaps] = useState([]);
   const [selectedMap, setSelectedMap] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadMindMaps();
@@ -16,8 +17,10 @@ const MindMapList = () => {
     try {
       const maps = await getMindMaps();
       setMindMaps(maps);
+      setError(null);
     } catch (error) {
       console.error('Failed to load mind maps', error);
+      handleErrors(error);
     }
   };
 
@@ -27,9 +30,20 @@ const MindMapList = () => {
     selectMindMap(map);
   };
 
+  const handleErrors = (error) => {
+    if (error.response) {
+      setError(`Server responded with a status code of ${error.response.status}`);
+    } else if (error.request) {
+      setError(`Network error: The request was made but no response was received`);
+    } else {
+      setError(`An error occurred: ${error.message}`);
+    }
+  };
+
   return (
     <div>
       <h2>Mind Maps List</h2>
+      {error && <p className="error-message">{error}</p>}
       {mindMaps.length > 0 ? (
         <ul>
           {mindMaps.map((map) => (
